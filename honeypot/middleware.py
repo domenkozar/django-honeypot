@@ -16,10 +16,7 @@ class HoneypotViewMiddleware(object):
         Middleware that verifies a valid honeypot on all non-ajax POSTs.
     """
     def process_view(self, request, callback, callback_args, callback_kwargs):
-        # TODO: this is temporary hardcode fix for forms that don't need honeypot
-        if request.path_info == u'/intranet/tmp_upload/':
-            return None
-        if request.is_ajax():
+        if request.is_ajax() or request.path_info in getattr(settings, 'HONEYPOT_SKIP_URLS', []):
             return None
         return verify_honeypot_value(request, None)
 
